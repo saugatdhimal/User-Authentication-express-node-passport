@@ -35,9 +35,18 @@ app.use(express.urlencoded({extended: true}));
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
+const sessionStore = new MongoStore({ mongooseConnection: connection, collection: 'sessions' })
 
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: sessionStore,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24
+    }
+}));
 
 
 /**
